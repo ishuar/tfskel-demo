@@ -107,9 +107,11 @@ jobs:
         with:
           go-version: '1.24.0'
           cache: true
+          cache-dependency-path: |
+            ${{ inputs.terraform_files_path }}/.terraform.lock.hcl
 
       - name: Install tfskel & analyze plan
-        id: analyze_plan
+        id: analyze-plan
         if: steps.plan.outputs.changes == 'true'
         continue-on-error: true ## tfskel exit with non-zero code if it detects drifts, but we don't want to fail the job because of that
         run: |
@@ -119,7 +121,7 @@ jobs:
 
       # Store plan file for apply job (needed for push events where no PR exists)
       - name: Upload plan artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: steps.plan.outputs.changes == 'true'
         with:
           name: tfplan-${{ inputs.environment }}-${{ github.run_id }}
@@ -164,7 +166,8 @@ jobs:
       # Download the plan created in the plan job
       # Extract to workspace root so plan_path references work correctly
       - name: Download plan artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
+        id: download-plan
         with:
           name: tfplan-${{ inputs.environment }}-${{ github.run_id }}
 
@@ -173,4 +176,4 @@ jobs:
         with:
           path: ${{ inputs.terraform_files_path }}
           label: ${{ inputs.terraform_files_path }}
-          plan: ${{ needs.plan.outputs.plan_path }}
+          plan_path: ${{ steps.download-plan.outputs.download-path }}
