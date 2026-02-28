@@ -102,9 +102,24 @@ jobs:
           label: ${{ inputs.terraform_files_path }}
           add_github_comment: true
 
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.24.0'
+          cache: true
+
+      - name: Install tfskel & analyze plan
+        id: analyze_plan
+        if: steps.plan.outputs.changes == 'true'
+        run: |
+          go install github.com/ishuar/tfskel@latest
+          terraform show -json ${{ steps.plan.outputs.plan_path }} > plan.json
+          tfskel drift plan --plan-file=plan.json
+
       # Store plan file for apply job (needed for push events where no PR exists)
       - name: Upload plan artifact
         uses: actions/upload-artifact@v6
+        if: steps.plan.outputs.changes == 'true'
         with:
           name: tfplan-${{ inputs.environment }}-${{ github.run_id }}
           path: ${{ steps.plan.outputs.plan_path }}
