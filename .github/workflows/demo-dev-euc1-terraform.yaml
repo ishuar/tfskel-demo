@@ -48,6 +48,11 @@ on:
 
 jobs:
   terraform-plan-apply:
+    permissions:
+      id-token: write # Required to authenticate with AWS using OIDC
+      contents: read # Required to checkout the code from the repository
+      pull-requests: write # Required to post comments on the pull request with terraform plan output
+
     uses: ./.github/workflows/reusable-terraform-plan-apply.yaml
     with:
       terraform_files_path: 'envs/dev/eu-central-1/demo'
