@@ -113,8 +113,8 @@ jobs:
         if: steps.plan.outputs.changes == 'true'
         run: |
           go install github.com/ishuar/tfskel@latest
-          terraform show -json ${{ steps.plan.outputs.plan_path }} > plan.json
-          tfskel drift plan --plan-file=plan.json
+          which tfskel && tfskel --version
+          tfskel drift plan --plan-file ${{ steps.plan.outputs.json_plan_path }}
 
       # Store plan file for apply job (needed for push events where no PR exists)
       - name: Upload plan artifact
