@@ -172,34 +172,9 @@ jobs:
           name: tfplan-${{ inputs.environment }}-${{ github.run_id }}
           path: ${{ needs.plan.outputs.plan_path }}
 
-      - name: Debug - Verify plan file exists
-        shell: bash
-        run: |
-          echo "=== Artifact Download Details ==="
-          echo "Download path: ${{ steps.download-plan.outputs.download-path }}"
-          echo "Expected plan path from plan job: ${{ needs.plan.outputs.plan_path }}"
-          echo ""
-          echo "=== Downloaded artifact contents ==="
-          ls -lah ${{ steps.download-plan.outputs.download-path }}
-          echo ""
-          echo "=== Verifying plan file at expected path ==="
-          if [ -f "${{ needs.plan.outputs.plan_path }}" ]; then
-            echo "✅ Plan file found at: ${{ needs.plan.outputs.plan_path }}"
-            ls -lh "${{ needs.plan.outputs.plan_path }}"
-            echo ""
-            echo "=== Plan file metadata ==="
-            file "${{ needs.plan.outputs.plan_path }}"
-          else
-            echo "❌ Plan file NOT found at: ${{ needs.plan.outputs.plan_path }}"
-            echo ""
-            echo "=== Searching for plan files in workspace ==="
-            find . -name "tfplan*" -type f 2>/dev/null || echo "No tfplan files found"
-            exit 1
-          fi
-
       - name: Terraform apply
         uses: dflook/terraform-apply@v2
         with:
           path: ${{ inputs.terraform_files_path }}
           label: ${{ inputs.terraform_files_path }}
-          plan_path: ${{ needs.plan.outputs.plan_path }}
+          plan_path: ${{ steps.download-plan.outputs.download-path }}
