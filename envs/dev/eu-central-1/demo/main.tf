@@ -5,3 +5,7 @@ resource "aws_s3_bucket" "tfskel_demo" {
     Name = "my-demo-dev-euc1-bucket"
   }
 }
+
+locals {
+  fail_tflint = true
+}
