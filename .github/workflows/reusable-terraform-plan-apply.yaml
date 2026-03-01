@@ -170,6 +170,7 @@ jobs:
         id: download-plan
         with:
           name: tfplan-${{ inputs.environment }}-${{ github.run_id }}
+          path: ${{ needs.plan.outputs.plan_path }}
 
       - name: Debug - Verify plan file exists
         shell: bash
