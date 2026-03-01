@@ -177,4 +177,4 @@ jobs:
         with:
           path: ${{ inputs.terraform_files_path }}
           label: ${{ inputs.terraform_files_path }}
-          plan_path: ${{ steps.download-plan.outputs.download-path }}
+          plan_path: ${{ needs.plan.outputs.plan_path }}
