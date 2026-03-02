@@ -35,11 +35,11 @@ on:
         default: "arn:aws:iam::484941465042:role/tfskel-terraform-dev-admin-github-oidc-role"
         description: The AWS role to assume for the terraform deployment.
       ## Note: It is not recommended to enable apply on PR for production environments.
-      enable_apply_on_pr:
+      auto_apply:
         type: boolean
         required: false
         default: false
-        description: Enable terraform apply on pull request. This is not recommended for production environments.
+        description: Set to true to auto-apply terraform plan. Keep false for production unless using approval gates.
       environment:
         type: string
         required: true
@@ -60,4 +60,5 @@ jobs:
       ## Cyclic dependency for bootstrap, need local apply for the first time.
       aws_role_to_assume: "arn:aws:iam::484941465042:role/tfskel-terraform-dev-admin-github-oidc-role"
       environment: dev
-      enable_apply_on_pr: true # set to true to enable apply on PR, not recommended for production environments.
+      ## Set to true to enable auto-apply on PR. Keep false for production unless using approval gates.
+      auto_apply: true

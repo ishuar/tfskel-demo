@@ -33,15 +33,20 @@ on:
         type: string
         required: true
         description: The AWS role to assume for the terraform deployment.
-      enable_apply_on_pr:
+      auto_apply:
         type: boolean
         required: false
         default: false
-        description: Enable terraform apply on pull request. This is not recommended for production environments.
+        description: Set to true to auto apply terraform plan. Not recommended for production env, always review plan before applying.
       environment:
         type: string
         required: true
         description: The environment in which the terraform resources should be deployed.
+      tfskel_version:
+        type: string
+        required: false
+        default: 'latest'
+        description: The version of tfskel to use for plan analysis.
 
 env:
   # verbosity setting for Terraform logs
@@ -107,8 +112,9 @@ jobs:
           label: ${{ inputs.terraform_files_path }}
           add_github_comment: true
 
-      - name: Set up Go
+      - name: Set up Go for tfskel analysis
         uses: actions/setup-go@v6
+        if: steps.plan.outputs.changes == 'true'
         with:
           go-version: '1.24.0'
           cache: true
@@ -118,9 +124,11 @@ jobs:
       - name: Install tfskel & analyze plan
         id: analyze-plan
         if: steps.plan.outputs.changes == 'true'
-        continue-on-error: true ## tfskel exit with non-zero code if it detects drifts, but we don't want to fail the job because of that
+        ## tfskel exit with non-zero code as per plan analysis results.
+        ## but we don't want to fail the job because of that
+        continue-on-error: true
         run: |
-          go install github.com/ishuar/tfskel@latest
+          go install github.com/ishuar/tfskel@${{ inputs.tfskel_version }}
           which tfskel && tfskel --version
           tfskel drift plan --plan-file ${{ steps.plan.outputs.json_plan_path }}
 
@@ -130,16 +138,20 @@ jobs:
     environment: ${{ inputs.environment }}
     needs: plan
     ## if not cancelled and not failed and plan was created successfully
-    ## if plan has changes, otherwise skip the job
-    ## only allowed on non-prod envs on PR when enabled
-    ## on Prod only from push to main branch (after PR merge)
+    ## if plan has changes
+    ## Auto-apply behavior:
+    ## - On PR: Only when auto_apply=true (use with caution, especially for production)
+    ## - On push to main: Always applies (ensure branch protection is enabled)
+    ## - On manual dispatch: Respects auto_apply input
+    ## IMPORTANT: Set auto_apply=false in production workflows unless you have proper approval gates
     if: ${{
       !cancelled() &&
       !failure() &&
       needs.plan.outputs.changes == 'true' &&
       (
-      (github.event_name == 'pull_request' && inputs.environment != 'prd' && inputs.enable_apply_on_pr == true) ||
-      (github.event_name == 'push' && github.ref == 'refs/heads/main' && inputs.environment == 'prd')
+      (github.event_name == 'pull_request' && inputs.auto_apply == true) ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && inputs.auto_apply == true)
       )
       }}
     steps:
