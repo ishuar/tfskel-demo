@@ -131,9 +131,9 @@ jobs:
         ## but we don't want to fail the job because of that
         continue-on-error: true
         env:
-          FORCE_COLOR: '1'
+          FORCE_COLOR: true
         run: |
-          go install github.com/ishuar/tfskel@dc2e8df
+          go install github.com/ishuar/tfskel@addac5c
           which tfskel && tfskel --version
           tfskel review plan --json-file ${{ steps.plan.outputs.json_plan_path }}
 
