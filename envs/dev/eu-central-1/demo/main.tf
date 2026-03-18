@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "tfskel_demo" {
-  bucket = "my-demo-dev-euc1-bucket"
+  bucket = "my-demo-dev-euc1-bucket-001"
 
   tags = {
     Name = "my-demo-dev-euc1-bucket"

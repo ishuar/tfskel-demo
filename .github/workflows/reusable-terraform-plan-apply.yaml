@@ -127,8 +127,8 @@ jobs:
           cache-dependency-path: |
             ${{ inputs.terraform_files_path }}/.terraform.lock.hcl
 
-      - name: Install tfskel & analyze plan
-        id: analyze-plan
+      - name: Install tfskel & review plan
+        id: review-plan
         if: steps.plan.outputs.changes == 'true'
         ## tfskel exit with non-zero code as per plan analysis results.
         ## but we don't want to fail the job because of that
@@ -137,7 +137,7 @@ jobs:
           go install github.com/ishuar/tfskel@${{ inputs.tfskel_version }}
           which tfskel && tfskel --version
           echo "Test Secret is ${{ secrets.test_secret }}"
-          tfskel drift plan --plan-file ${{ steps.plan.outputs.json_plan_path }}
+          tfskel review plan --json-file ${{ steps.plan.outputs.json_plan_path }}
 
   apply:
     name: Terraform Apply Stage
