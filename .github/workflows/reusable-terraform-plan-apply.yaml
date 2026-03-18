@@ -51,9 +51,6 @@ on:
       terraform_modules_ssh_deploy_key:
         required: false
         description: SSH private key for accessing private terraform modules, if applicable. Ensure the corresponding public key is added to the repository deploy keys with read access. For enhanced security, consider using a dedicated deploy key with limited permissions.
-      test_secret:
-        required: false
-        description: This is a test secret to demonstrate secrets in reusable workflows. It is not used in the workflow logic.
 env:
   # verbosity setting for Terraform logs
   TF_LOG: ${{ inputs.terraform_log_level }}
@@ -133,10 +130,11 @@ jobs:
         ## tfskel exit with non-zero code as per plan analysis results.
         ## but we don't want to fail the job because of that
         continue-on-error: true
+        env:
+          FORCE_COLOR: '1'
         run: |
           go install github.com/ishuar/tfskel@${{ inputs.tfskel_version }}
           which tfskel && tfskel --version
-          echo "Test Secret is ${{ secrets.test_secret }}"
           tfskel review plan --json-file ${{ steps.plan.outputs.json_plan_path }}
 
   apply:

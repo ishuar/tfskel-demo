@@ -45,6 +45,3 @@ jobs:
       environment: dev
       auto_apply: ${{ inputs.auto_apply || true }} # Set to true to enable auto-apply on PR. Keep false for production unless using approval gates.
       tfskel_version: ${{ inputs.tfskel_version || 'latest' }}
-    secrets:
-      # terraform_modules_ssh_deploy_key: ${{ secrets.TERRAFORM_MODULES_SSH_DEPLOY_KEY }} # Optional, only if you have private terraform modules accessed via SSH. Ensure the corresponding public key is added to the repository deploy keys with read access. For enhanced security, consider using a dedicated deploy key with limited permissions.
-      test_secret: ${{ secrets.TEST_SECRET }} # This is
