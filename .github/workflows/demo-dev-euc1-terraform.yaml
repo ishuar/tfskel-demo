@@ -43,5 +43,5 @@ jobs:
       aws_region: eu-central-1
       aws_role_to_assume: "arn:aws:iam::484941465042:role/tfskel-terraform-dev-admin-github-oidc-role" # Cyclic dependency for bootstrap, need local apply for the first time.
       environment: dev
-      auto_apply: ${{ inputs.auto_apply || true }} # Set to true to enable auto-apply on PR. Keep false for production unless using approval gates.
+      auto_apply: ${{ inputs.auto_apply || false }} # Set to true to enable auto-apply on PR. Keep false for production unless using approval gates.
       tfskel_version: ${{ inputs.tfskel_version || 'latest' }}
