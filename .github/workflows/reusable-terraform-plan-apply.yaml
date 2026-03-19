@@ -94,13 +94,13 @@ jobs:
         name: 'Terraform cache'
         id: cache
         with:
-          path: ${{ env.TF_PLUGIN_CACHE_DIR }}
+          path: ${{ inputs.terraform_files_path }}/.terraform
           key: ${{ runner.os }}-${{ inputs.terraform_files_path }}-${{ hashFiles(format('{0}/{1}', inputs.terraform_files_path , inputs.cache_hash_file)) }}
 
       - if: ${{ steps.cache.outputs.cache-hit != 'true' }}
-        name: Create TF_PLUGIN_CACHE_DIR
+        name: Create .terraform directory for caching
         shell: bash
-        run: mkdir -p ${{ env.TF_PLUGIN_CACHE_DIR }}
+        run: mkdir -p ${{ inputs.terraform_files_path }}/.terraform
 
       ## dflook/terraform-plan stores a hash of the generated plan inside a hidden
       ## PR comment. On merge, dflook/terraform-apply finds the PR by its merge
