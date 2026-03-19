@@ -91,16 +91,12 @@ jobs:
           aws-region: ${{ inputs.aws_region }}
 
       - uses: actions/cache@v5
-        name: 'Terraform cache'
+        name: 'cache terraform plugins'
         id: cache
         with:
-          path: ${{ inputs.terraform_files_path }}/.terraform
-          key: ${{ runner.os }}-${{ inputs.terraform_files_path }}-${{ hashFiles(format('{0}/{1}', inputs.terraform_files_path , inputs.cache_hash_file)) }}
-
-      - if: ${{ steps.cache.outputs.cache-hit != 'true' }}
-        name: Create .terraform directory for caching
-        shell: bash
-        run: mkdir -p ${{ inputs.terraform_files_path }}/.terraform
+          # ref: https://github.com/dflook/terraform-github-actions/issues/105
+          path: ${{ runner.temp }}/_github_home/.terraform.d/plugin-cache
+          key: ${{ runner.os }}-${{ hashFiles(format('{0}/{1}', inputs.terraform_files_path , inputs.cache_hash_file)) }}
 
       ## dflook/terraform-plan stores a hash of the generated plan inside a hidden
       ## PR comment. On merge, dflook/terraform-apply finds the PR by its merge
