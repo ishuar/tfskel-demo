@@ -1,0 +1,23 @@
+# tfskel configuration file
+# This file contains default settings for your Terraform operations with tfskel
+#
+# For full configuration reference with all available options and examples:
+# https://github.com/ishuar/tfskel/blob/main/.tfskel.example.yaml
+#
+
+backend:
+    s3:
+        bucket_name: CHANGE_ME_WITH_YOUR_GLOBALLY_UNIQUE_S3_BUCKET_NAME
+critical_resources: []
+provider:
+    aws:
+        account_mapping:
+            dev: REPLACE_WITH_YOUR_DEV_ACCOUNT_ID
+            prd: REPLACE_WITH_YOUR_PRD_ACCOUNT_ID
+            stg: REPLACE_WITH_YOUR_STG_ACCOUNT_ID
+        default_tags:
+            managed_by: terraform
+        regions:
+            - eu-central-1
+        version: ~> 6.0
+terraform_version: ~> 1.13
