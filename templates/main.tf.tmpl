@@ -1,0 +1,7 @@
+resource "aws_s3_bucket" "tfskel_demo" {
+  bucket = "my-{{.AppDir}}-{{.Env}}-{{.ShortRegion}}-bucket"
+
+  tags = {
+    Name = "my-{{.AppDir}}-{{.Env}}-{{.ShortRegion}}-bucket"
+  }
+}
