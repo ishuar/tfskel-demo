@@ -6,18 +6,23 @@
 #
 
 backend:
-    s3:
-        bucket_name: CHANGE_ME_WITH_YOUR_GLOBALLY_UNIQUE_S3_BUCKET_NAME
+  s3:
+    bucket_name: tfskel-terraform-demo-euc1-001
 critical_resources: []
 provider:
-    aws:
-        account_mapping:
-            dev: REPLACE_WITH_YOUR_DEV_ACCOUNT_ID
-            prd: REPLACE_WITH_YOUR_PRD_ACCOUNT_ID
-            stg: REPLACE_WITH_YOUR_STG_ACCOUNT_ID
-        default_tags:
-            managed_by: terraform
-        regions:
-            - eu-central-1
-        version: ~> 6.0
-terraform_version: ~> 1.13
+  aws:
+    account_mapping:
+      dev: 484941465042
+    default_tags:
+      managed_by: terraform
+      github_repo: tfskel-demo
+    regions:
+      - eu-central-1
+    version: ~> 6.0
+terraform_version: ~> 1.13.1
+templates:
+  dir: templates
+workflows:
+  create: true
+  name_template: '{{.AppDir}}-{{.Env}}-{{.ShortRegion}}'
+  aws_role_name: tfskel-terraform-{{.Env}}-admin-github-oidc-role
