@@ -15,7 +15,8 @@ jobs:
     if: needs.detect.outputs.matrix != '[]'
     strategy:
       matrix:
-        path: ${{ fromJson(needs.detect.outputs.matrix) }}
+        include: ${{ fromJson(needs.detect.outputs.matrix) }}
+      fail-fast: false
     uses: ./.github/workflows/reusable-lint.yaml
     with:
       terraform_files_path: ${{ matrix.path }}
