@@ -1,3 +1,4 @@
+name: Lint Terraform Files
 on:
   pull_request:
     paths: ['envs/**']
