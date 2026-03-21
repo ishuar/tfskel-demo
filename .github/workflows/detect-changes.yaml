@@ -9,15 +9,15 @@ on:
         default: 'envs/**/*.tf'
     outputs:
       matrix:
-        description: JSON array of changed directories for use in a matrix strategy
-        value: ${{ jobs.detect-changes.outputs.matrix }}
+        description: JSON array of objects with path, region, and environment for use in a matrix strategy
+        value: ${{ jobs.changes.outputs.matrix }}
 
 jobs:
-  detect-changes:
+  changes:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
-      matrix: ${{ steps.changed.outputs.all_changed_files }}
+      matrix: ${{ steps.enrich.outputs.matrix }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -28,3 +28,9 @@ jobs:
           files: ${{ inputs.terraform_files_pattern }}
           dir_names: "true"
           matrix: "true"
+      - name: Enrich matrix with region and environment
+        id: enrich
+        run: |
+          matrix=$(echo '${{ steps.changed.outputs.all_changed_files }}' | jq -c \
+            '[.[] | {path: ., region: split("/")[2], environment: split("/")[1]}]')
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
