@@ -17,6 +17,7 @@ jobs:
           files: 'envs/**'
           dir_names: "true"
           json: "true"
+          escape_json: "false"
 
   lint:
     needs: detect
