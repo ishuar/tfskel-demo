@@ -1,0 +1,29 @@
+on:
+  pull_request:
+    paths: ['envs/**']
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.changed.outputs.all_changed_files }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: tj-actions/changed-files@v45
+        id: changed
+        with:
+          files: 'envs/**'
+          dir_names: "true"
+          json: "true"
+
+  lint:
+    needs: detect
+    if: needs.detect.outputs.matrix != '[]'
+    strategy:
+      matrix:
+        path: ${{ fromJson(needs.detect.outputs.matrix) }}
+    uses: ./.github/workflows/reusable-lint.yaml
+    with:
+      terraform_files_path: ${{ matrix.path }}
