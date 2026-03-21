@@ -20,6 +20,9 @@ jobs:
 
   lint:
     needs: detect
+    permissions:
+      pull-requests: write
+      contents: read
     if: needs.detect.outputs.matrix != '[]'
     strategy:
       matrix:
