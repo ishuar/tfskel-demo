@@ -1,11 +1,15 @@
 name: Lint Terraform Files
 on:
   pull_request:
-    paths: ['envs/**']
+    branches:
+      - main
+    paths:
+      - 'envs/**'
+      - '.github/workflows/lint.yaml'
 
 jobs:
   detect:
-    uses: ./.github/workflows/detect-changes.yaml
+    uses: ./.github/workflows/reusable-detect-changes.yaml
 
   lint:
     needs: detect

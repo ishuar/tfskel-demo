@@ -1,4 +1,4 @@
-name: Detect Changes in Terraform Files
+name: 'Reusable: Detect Changes in Terraform Files'
 on:
   workflow_call:
     inputs:
