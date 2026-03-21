@@ -5,3 +5,7 @@ resource "aws_s3_bucket" "tfskel_demo" {
     Name = "my-customer-1-dev-euc1-bucket"
   }
 }
+
+locals {
+  break_lint = true
+}
