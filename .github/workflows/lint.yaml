@@ -4,19 +4,7 @@ on:
 
 jobs:
   detect:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.changed.outputs.all_changed_files }}
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - uses: tj-actions/changed-files@v45
-        id: changed
-        with:
-          files: 'envs/**/*.tf'
-          dir_names: "true"
-          matrix: "true"
+    uses: ./.github/workflows/detect-changes.yaml
 
   lint:
     needs: detect
