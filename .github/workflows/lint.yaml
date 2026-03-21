@@ -14,10 +14,9 @@ jobs:
       - uses: tj-actions/changed-files@v45
         id: changed
         with:
-          files: 'envs/**'
+          files: 'envs/**/*.tf'
           dir_names: "true"
-          json: "true"
-          escape_json: "false"
+          matrix: "true"
 
   lint:
     needs: detect
