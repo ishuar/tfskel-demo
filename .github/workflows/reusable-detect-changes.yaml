@@ -3,10 +3,9 @@ on:
   workflow_call:
     inputs:
       terraform_files_pattern:
-        required: false
-        description: Path to the terraform files to check for changes
+        required: true
+        description: Path to the terraform files to check for changes, for example 'envs/**/*.tf'
         type: string
-        default: 'envs/**/*.tf'
     outputs:
       matrix:
         description: JSON array of objects with path, region, and environment for use in a matrix strategy
