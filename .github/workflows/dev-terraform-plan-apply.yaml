@@ -19,6 +19,8 @@ on:
     paths:
       - 'envs/dev/**'
       - '.github/workflows/dev-terraform-plan-apply.yaml'
+      - '.github/workflows/reusable-detect-changes.yaml'
+      - '.github/workflows/reusable-terraform-plan-apply.yaml'
 
   push:
     branches:
