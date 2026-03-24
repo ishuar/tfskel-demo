@@ -1,0 +1,28 @@
+# tfskel configuration file
+# This file contains default settings for your Terraform operations with tfskel
+#
+# For full configuration reference with all available options and examples:
+# https://github.com/ishuar/tfskel/blob/main/.tfskel.example.yaml
+#
+
+backend:
+  s3:
+    bucket_name: tfskel-terraform-demo-euc1-001
+critical_resources: []
+provider:
+  aws:
+    account_mapping:
+      dev: 484941465042
+    default_tags:
+      managed_by: terraform
+      github_repo: tfskel-demo
+    regions:
+      - eu-central-1
+    version: ~> 6.0
+terraform_version: ~> 1.13.1
+templates:
+  dir: templates
+workflows:
+  create: true
+  name_template: '{{.AppDir}}-{{.Env}}-{{.ShortRegion}}'
+  aws_role_name: tfskel-terraform-{{.Env}}-admin-github-oidc-role
