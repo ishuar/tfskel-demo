@@ -1,0 +1,25 @@
+# tfskel-source: {"template":"root/.pre-commit-config.yaml.tmpl","hash":"d8dba5832c216213"}
+repos:
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.105.0
+    hooks:
+      - id: terraform_fmt
+      - id: terraform_validate
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: detect-aws-credentials
+        args:
+          - --allow-missing-credentials
+      - id: end-of-file-fixer
+      - id: detect-private-key
+      - id: check-yaml
+      - id: trailing-whitespace
+  - repo: local
+    hooks:
+      - id: tfskel-validate-check
+        name: Validate tfskel configuration and tools
+        entry: tfskel validate
+        language: system
+        pass_filenames: false
+        files: '\.tfskel\.yaml$'
