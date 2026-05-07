@@ -1,0 +1,24 @@
+# mise: dev tool manager — pins tool versions, runs post-install hooks,
+# and trusts per-environment configs so `mise install` is all you need.
+# https://mise.jdx.dev
+
+min_version = "2024.9.0"
+
+[settings]
+experimental = true
+legacy_version_file = true
+
+[tools]
+terraform = "1.13.1"
+awscli = "latest"
+pre-commit = "latest"
+tflint = "latest"
+trivy = "latest"
+
+[hooks]
+# After mise install: set up pre-commit hooks and trust mise configs
+postinstall = """
+if [ -f .pre-commit-config.yaml ] && [ "$(git rev-parse --show-toplevel 2>/dev/null)" = "$PWD" ]; then
+  pre-commit install --install-hooks
+fi
+"""
