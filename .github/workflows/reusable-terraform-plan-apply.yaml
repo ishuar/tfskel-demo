@@ -87,7 +87,6 @@ jobs:
       group: 'tf-plan-${{ inputs.terraform_files_path }}-${{ github.event.pull_request.number || github.ref_name }}'
       cancel-in-progress: true
     outputs:
-      plan_path: ${{ steps.plan.outputs.plan_path }}
       changes: ${{ steps.plan.outputs.changes }}
     steps:
       - name: checkout the repository
